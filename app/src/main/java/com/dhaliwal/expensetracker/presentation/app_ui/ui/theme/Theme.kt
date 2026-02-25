@@ -1,4 +1,4 @@
-package com.dhaliwal.expensetracker.ui.theme
+package com.dhaliwal.expensetracker.presentation.app_ui.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -35,7 +35,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun ExpenseTrackerTheme(
-    darkTheme: Boolean = false,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit

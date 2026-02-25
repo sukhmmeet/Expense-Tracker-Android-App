@@ -1,4 +1,4 @@
-package com.dhaliwal.expensetracker.DatabaseClasses
+package com.dhaliwal.expensetracker.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,14 +7,13 @@ import androidx.room.PrimaryKey
 data class Expense(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-
     val title: String,        // NOT NULL
     val amount: Double,       // NOT NULL
     val category: String,     // NOT NULL
     val date: Long,           // NOT NULL
     val note: String = "",    // NOT NULL, default empty string
     val type: String,         // NOT NULL ("Income" or "Expense")
-
     val isRecurring: Boolean = false,  // NOT NULL, default false
-    val tags: String = ""               // NOT NULL, default empty string
+    val tags: String = "",               // NOT NULL, default empty string
+    val payment_method : String
 )

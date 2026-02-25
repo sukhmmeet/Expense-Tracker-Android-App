@@ -43,6 +43,7 @@ android {
 dependencies {
 
     implementation (libs.androidx.room.runtime)
+    implementation(libs.androidx.material3)
     ksp (libs.androidx.room.compiler)
     implementation (libs.androidx.room.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -50,6 +51,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.material.icons.extended)
 //    implementation("io.coil-kt:coil-compose:2.6.0")
 
     implementation(libs.androidx.core.ktx)
