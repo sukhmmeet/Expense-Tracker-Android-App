@@ -8,5 +8,5 @@ import androidx.room.RoomDatabase
     version = 2
 )
 abstract class ExpensesDatabase : RoomDatabase() {
-    abstract fun getDao() : ExpenseDao
+    abstract fun expenseDao() : ExpenseDao
 }

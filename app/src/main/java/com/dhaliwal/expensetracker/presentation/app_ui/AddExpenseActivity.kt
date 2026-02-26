@@ -68,7 +68,15 @@ class AddExpenseActivity : ComponentActivity() {
 @Composable
 fun AddExpenseUI() {
 
+    val modifierTextField = Modifier
+        .padding(
+            vertical = 3.dp,
+            horizontal = 30.dp
+        )
+        .fillMaxWidth()
     var title by remember { mutableStateOf("") }
+    var amount by remember { mutableStateOf("") }
+
 
     Scaffold(
         topBar = {
@@ -100,15 +108,22 @@ fun AddExpenseUI() {
             // Next to Create Content of this
             OutlinedTextField(
                 value = title,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
+                modifier = modifierTextField,
                 label = { Text(text = "Title") },
                 placeholder = { Text(text = "Title") },
                 onValueChange = {
                     title = it
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+            )
+            OutlinedTextField(
+                value = amount,
+                onValueChange = { amount = it },
+                label = { Text("Amount") },
+                placeholder = { Text("Amount") },
+                modifier = modifierTextField,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                leadingIcon = { Text("₹") } // ✅ Use leadingIcon for prefix
             )
         }
     }

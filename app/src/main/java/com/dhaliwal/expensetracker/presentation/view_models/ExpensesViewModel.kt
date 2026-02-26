@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class ExpensesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ExpensesRepository(DatabaseProvider.getDatabase(application).getDao())
+    private val repository = ExpensesRepository(DatabaseProvider.getDatabase(application).expenseDao())
 
     val allExpenses = repository.getAllExpenses()
 
