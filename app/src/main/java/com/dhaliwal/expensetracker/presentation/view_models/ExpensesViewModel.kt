@@ -15,9 +15,13 @@ class ExpensesViewModel(application: Application) : AndroidViewModel(application
 
     val allExpenses = repository.getAllExpenses()
 
+
     fun insert(expense: Expense) = viewModelScope.launch { repository.insert(expense) }
+
     fun update(expense: Expense) = viewModelScope.launch { repository.update(expense) }
+
     fun delete(expense: Expense) = viewModelScope.launch { repository.delete(expense) }
 
     fun getByCategory(category: String) = repository.getByCategory(category)
+
 }

@@ -68,6 +68,10 @@ dependencies {
 
     testImplementation(libs.junit)
 
+//    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.kotlinx.coroutines.test.v173)
+
 // Room testing (Local Unit Test)
     testImplementation(libs.androidx.room.testing)
     testImplementation(libs.kotlinx.coroutines.test)
