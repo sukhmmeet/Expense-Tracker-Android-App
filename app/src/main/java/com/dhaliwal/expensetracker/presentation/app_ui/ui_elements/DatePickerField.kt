@@ -1,4 +1,4 @@
-package com.dhaliwal.expensetracker.presentation.app_ui
+package com.dhaliwal.expensetracker.presentation.app_ui.ui_elements
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth

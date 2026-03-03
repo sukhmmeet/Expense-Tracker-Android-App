@@ -60,6 +60,8 @@ import com.dhaliwal.expensetracker.data.local.Expense
 import com.dhaliwal.expensetracker.data.local.ExpensesConstants
 import com.dhaliwal.expensetracker.data.local.TransactionType
 import com.dhaliwal.expensetracker.presentation.app_ui.ui.theme.ExpenseTrackerTheme
+import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.CustomDropdownField
+import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.DatePickerField
 import com.dhaliwal.expensetracker.presentation.view_models.ExpensesViewModel
 
 class AddExpenseActivity : ComponentActivity() {
