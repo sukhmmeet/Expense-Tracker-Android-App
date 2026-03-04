@@ -18,14 +18,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dhaliwal.expensetracker.ui.theme.ExpenseTrackerTheme
 
 @Composable
 fun ExpenseDonutChart(
     income: Float,
     expense: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    donutSize : Dp = 220.dp
 ) {
     val total = income + expense
     val gapAngle = 4f
@@ -40,7 +44,7 @@ fun ExpenseDonutChart(
     )
 
     Box(
-        modifier = modifier.size(220.dp),
+        modifier = modifier.size(donutSize),
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -85,20 +89,15 @@ fun ExpenseDonutChart(
                 )
             }
         }
-
-        // Center Content
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Balance",
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-
-            Text(
-                text = "₹ ${(income - expense).toInt()}",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    ExpenseTrackerTheme {
+        ExpenseDonutChart(
+            income = 10000f,
+            expense = 5000f
+        )
     }
 }
