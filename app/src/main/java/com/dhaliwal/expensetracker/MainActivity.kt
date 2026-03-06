@@ -15,10 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,18 +29,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dhaliwal.expensetracker.data.local.ExpensesConstants
+import com.dhaliwal.expensetracker.data.local.TransactionType
 import com.dhaliwal.expensetracker.presentation.app_ui.AddExpenseActivity
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.BalanceCard
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.FinancialOverViewCard
+import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.RecentTransactionCard
 import com.dhaliwal.expensetracker.presentation.view_models.ExpensesViewModel
 import com.dhaliwal.expensetracker.ui.theme.ExpenseTrackerTheme
 import kotlin.getValue
@@ -92,14 +103,42 @@ fun MainScreen(
 
 @Composable
 fun MainActivityContent(
-    balance : Float = 5000f
+    balance : Float = 5000f,
 ) {
+    val modifier1 = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 6.dp)
+    var filter by remember { mutableStateOf("All") }
     Column(
         modifier = Modifier.padding(3.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BalanceCard(balance)
-        FinancialOverViewCard()
+        BalanceCard(balance, modifier1)
+        FinancialOverViewCard(
+            modifier = modifier1
+        )
+        LazyRow(
+            modifier = modifier1
+        ) {
+            items(ExpensesConstants.tag){ tag ->
+                FilterChip(
+                    selected = tag == filter,
+                    onClick = { filter = tag },
+                    label = {
+                        Text(
+                            text = tag,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    modifier = Modifier.weight(1F).padding(horizontal = 4.dp)
+                )
+            }
+        }
+        RecentTransactionCard(
+            modifier = modifier1,
+            context = LocalContext.current
+        )
     }
 }
 
@@ -142,7 +181,7 @@ fun TopMainScreenBar(
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "menu",
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier.size(30.dp)
             )
         }
         Text(
@@ -150,7 +189,7 @@ fun TopMainScreenBar(
             fontSize = 30.sp,
             modifier = Modifier
                 .padding(start = 8.dp),
-            fontWeight = FontWeight.Thin,
+            fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.SansSerif
         )
     }

@@ -23,12 +23,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FinancialOverViewCard(
     income : Float = 10000f,
-    expense : Float = 5000f
+    expense : Float = 5000f,
+    modifier : Modifier = Modifier
 ){
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(24.dp)
     ){
         Row(
@@ -80,8 +79,8 @@ fun FinancialOverViewCard(
             ExpenseDonutChart(
                 income,
                 expense,
-                modifier = Modifier.padding(8.dp),
-                180.dp
+                modifier = Modifier.padding(15.dp),
+                120.dp
             )
         }
     }

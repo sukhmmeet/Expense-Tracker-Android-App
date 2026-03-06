@@ -66,13 +66,15 @@ fun CustomDropdownField(
             onDismissRequest = { expanded = false }
         ) {
             options.forEach { item ->
-                DropdownMenuItem(
-                    text = { Text(item) },
-                    onClick = {
-                        onValueSelected(item)
-                        expanded = false
-                    }
-                )
+                if(item != "All"){
+                    DropdownMenuItem(
+                        text = { Text(item) },
+                        onClick = {
+                            onValueSelected(item)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }

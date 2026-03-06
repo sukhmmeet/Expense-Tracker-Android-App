@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BalanceCard(balance: Float) {
+fun BalanceCard(balance: Float, modifier: Modifier) {
 
     val animatedBalance by animateFloatAsState(
         targetValue = balance,
@@ -64,5 +64,5 @@ fun BalanceCard(balance: Float) {
 @Preview
 @Composable
 fun Preview1(){
-    BalanceCard(5000f)
+    BalanceCard(5000f, Modifier)
 }

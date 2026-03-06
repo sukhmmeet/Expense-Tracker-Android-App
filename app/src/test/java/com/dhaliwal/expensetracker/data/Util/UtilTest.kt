@@ -1,5 +1,6 @@
 package com.dhaliwal.expensetracker.data.Util
 
+import com.dhaliwal.expensetracker.R
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -14,6 +15,10 @@ class UtilTest {
         util = Util()
     }
 
+    @Test
+    fun getLogo() {
+        assertEquals(R.drawable.food, util.getLogo("Food"))
+    }
 
 //    @After
 //    fun tearDown() {
