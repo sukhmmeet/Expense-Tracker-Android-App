@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun FinancialOverViewCard(
-    income : Float = 10000f,
-    expense : Float = 5000f,
-    modifier : Modifier = Modifier
+    modifier: Modifier = Modifier,
+    income: Double = 10000.3,
+    expense: Double = 5000.3
 ){
     Card(
         modifier = modifier,

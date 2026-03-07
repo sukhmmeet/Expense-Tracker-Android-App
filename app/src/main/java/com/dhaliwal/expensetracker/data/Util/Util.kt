@@ -1,7 +1,9 @@
 package com.dhaliwal.expensetracker.data.Util
 
 import com.dhaliwal.expensetracker.R
+import com.dhaliwal.expensetracker.data.local.Expense
 import com.dhaliwal.expensetracker.data.local.ExpensesConstants
+import com.dhaliwal.expensetracker.data.local.TotalAmount
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.ExpenseDonutChart
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -27,5 +29,26 @@ class Util {
             index++
         }
         return ExpensesConstants.categoryIcon[index]
+    }
+
+    //type = if(selectedTypeIncomeOrExpense == TransactionType.EXPENSE){
+    //                                "Expense"
+    //                            } else {
+    //                                "Income"
+    //                            }
+    fun getTotalExpenseAndIncome(expenses: List<Expense>): TotalAmount {
+
+        var expenseTotal = 0.0
+        var incomeTotal = 0.0
+
+        expenses.forEach {
+            if (it.type == "Expense") {
+                expenseTotal += it.amount
+            } else {
+                incomeTotal += it.amount
+            }
+        }
+
+        return TotalAmount(expenseTotal, incomeTotal)
     }
 }

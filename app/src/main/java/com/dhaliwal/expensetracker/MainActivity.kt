@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,13 +22,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,9 +47,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dhaliwal.expensetracker.data.Util.Util
 import com.dhaliwal.expensetracker.data.local.Expense
 import com.dhaliwal.expensetracker.data.local.ExpensesConstants
-import com.dhaliwal.expensetracker.data.local.TransactionType
 import com.dhaliwal.expensetracker.presentation.app_ui.AddExpenseActivity
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.BalanceCard
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.FinancialOverViewCard
@@ -80,6 +84,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
 //    viewModel: ExpensesViewModel = viewModel()
@@ -97,15 +102,147 @@ fun MainScreen(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            MainActivityContent()
+            MainActivityContent(
+
+            )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainActivityContent(
-    balance : Float = 5000f,
+
 ) {
+    val expenses = listOf(
+        Expense(
+            title = "Lunch",
+            amount = 250.0,
+            category = "Food",
+            date = System.currentTimeMillis(),
+            note = "College canteen",
+            type = "Expense",
+            isRecurring = false,
+            tags = "Daily",
+            payment_method = "Cash"
+        ),
+        Expense(
+            title = "Bus Ticket",
+            amount = 60.5,
+            category = "Transport",
+            date = System.currentTimeMillis(),
+            note = "Bus to college",
+            type = "Expense",
+            isRecurring = false,
+            tags = "Daily",
+            payment_method = "Cash"
+        ),
+        Expense(
+            title = "Electricity Bill",
+            amount = 1800.0,
+            category = "Bills",
+            date = System.currentTimeMillis(),
+            note = "Monthly bill",
+            type = "Expense",
+            isRecurring = true,
+            tags = "Monthly",
+            payment_method = "Net Banking"
+        ),
+        Expense(
+            title = "House Rent",
+            amount = 12000.0,
+            category = "Rent",
+            date = System.currentTimeMillis(),
+            note = "March rent",
+            type = "Expense",
+            isRecurring = true,
+            tags = "Monthly",
+            payment_method = "Bank Transfer"
+        ),
+        Expense(
+            title = "Movie",
+            amount = 400.0,
+            category = "Entertainment",
+            date = System.currentTimeMillis(),
+            note = "Cinema with friends",
+            type = "Expense",
+            isRecurring = false,
+            tags = "Occasional",
+            payment_method = "UPI"
+        ),
+        Expense(
+            title = "Doctor Visit",
+            amount = 700.0,
+            category = "Health",
+            date = System.currentTimeMillis(),
+            note = "General checkup",
+            type = "Expense",
+            isRecurring = false,
+            tags = "One Time",
+            payment_method = "Cash"
+        ),
+        Expense(
+            title = "New Shoes",
+            amount = 2200.0,
+            category = "Shopping",
+            date = System.currentTimeMillis(),
+            note = "Sports shoes",
+            type = "Expense",
+            isRecurring = false,
+            tags = "Occasional",
+            payment_method = "Credit Card"
+        ),
+        Expense(
+            title = "Programming Book",
+            amount = 950.0,
+            category = "Education",
+            date = System.currentTimeMillis(),
+            note = "DSA practice book",
+            type = "Expense",
+            isRecurring = false,
+            tags = "One Time",
+            payment_method = "UPI"
+        ),
+        Expense(
+            title = "Mutual Fund SIP",
+            amount = 3000.0,
+            category = "Investment",
+            date = System.currentTimeMillis(),
+            note = "Monthly investment",
+            type = "Expense",
+            isRecurring = true,
+            tags = "Monthly",
+            payment_method = "Bank Transfer"
+        ),
+        Expense(
+            title = "Salary Credit",
+            amount = 45000.0,
+            category = "Salary",
+            date = System.currentTimeMillis(),
+            note = "Company salary",
+            type = "Income",
+            isRecurring = true,
+            tags = "Monthly",
+            payment_method = "Bank Transfer"
+        ),
+        Expense(
+            title = "Misc Expense",
+            amount = 300.0,
+            category = "Others",
+            date = System.currentTimeMillis(),
+            note = "Random expense",
+            type = "Expense",
+            isRecurring = false,
+            tags = "Occasional",
+            payment_method = "UPI"
+        )
+    )
+    var totalExpenseAndIncome = Util().getTotalExpenseAndIncome(expenses)
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = false,
+    )
+    var expense by remember { mutableStateOf<Expense?>(null) }
     val modifier1 = Modifier
         .fillMaxWidth()
         .padding(horizontal = 16.dp, vertical = 6.dp)
@@ -114,9 +251,11 @@ fun MainActivityContent(
         modifier = Modifier.padding(3.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BalanceCard(balance, modifier1)
+        BalanceCard(totalExpenseAndIncome.totalIncome - totalExpenseAndIncome.totalExpense, modifier1)
         FinancialOverViewCard(
-            modifier = modifier1
+            modifier = modifier1,
+            income = totalExpenseAndIncome.totalIncome,
+            expense = totalExpenseAndIncome.totalExpense
         )
         LazyRow(
             modifier = modifier1
@@ -136,134 +275,56 @@ fun MainActivityContent(
                 )
             }
         }
-        val expenses = listOf(
-            Expense(
-                title = "Lunch",
-                amount = 250.0,
-                category = "Food",
-                date = System.currentTimeMillis(),
-                note = "College canteen",
-                type = "Expense",
-                isRecurring = false,
-                tags = "Daily",
-                payment_method = "Cash"
-            ),
-            Expense(
-                title = "Bus Ticket",
-                amount = 60.0,
-                category = "Transport",
-                date = System.currentTimeMillis(),
-                note = "Bus to college",
-                type = "Expense",
-                isRecurring = false,
-                tags = "Daily",
-                payment_method = "Cash"
-            ),
-            Expense(
-                title = "Electricity Bill",
-                amount = 1800.0,
-                category = "Bills",
-                date = System.currentTimeMillis(),
-                note = "Monthly bill",
-                type = "Expense",
-                isRecurring = true,
-                tags = "Monthly",
-                payment_method = "Net Banking"
-            ),
-            Expense(
-                title = "House Rent",
-                amount = 12000.0,
-                category = "Rent",
-                date = System.currentTimeMillis(),
-                note = "March rent",
-                type = "Expense",
-                isRecurring = true,
-                tags = "Monthly",
-                payment_method = "Bank Transfer"
-            ),
-            Expense(
-                title = "Movie",
-                amount = 400.0,
-                category = "Entertainment",
-                date = System.currentTimeMillis(),
-                note = "Cinema with friends",
-                type = "Expense",
-                isRecurring = false,
-                tags = "Occasional",
-                payment_method = "UPI"
-            ),
-            Expense(
-                title = "Doctor Visit",
-                amount = 700.0,
-                category = "Health",
-                date = System.currentTimeMillis(),
-                note = "General checkup",
-                type = "Expense",
-                isRecurring = false,
-                tags = "One Time",
-                payment_method = "Cash"
-            ),
-            Expense(
-                title = "New Shoes",
-                amount = 2200.0,
-                category = "Shopping",
-                date = System.currentTimeMillis(),
-                note = "Sports shoes",
-                type = "Expense",
-                isRecurring = false,
-                tags = "Occasional",
-                payment_method = "Credit Card"
-            ),
-            Expense(
-                title = "Programming Book",
-                amount = 950.0,
-                category = "Education",
-                date = System.currentTimeMillis(),
-                note = "DSA practice book",
-                type = "Expense",
-                isRecurring = false,
-                tags = "One Time",
-                payment_method = "UPI"
-            ),
-            Expense(
-                title = "Mutual Fund SIP",
-                amount = 3000.0,
-                category = "Investment",
-                date = System.currentTimeMillis(),
-                note = "Monthly investment",
-                type = "Expense",
-                isRecurring = true,
-                tags = "Monthly",
-                payment_method = "Bank Transfer"
-            ),
-            Expense(
-                title = "Salary Credit",
-                amount = 45000.0,
-                category = "Salary",
-                date = System.currentTimeMillis(),
-                note = "Company salary",
-                type = "Income",
-                isRecurring = true,
-                tags = "Monthly",
-                payment_method = "Bank Transfer"
-            ),
-            Expense(
-                title = "Misc Expense",
-                amount = 300.0,
-                category = "Others",
-                date = System.currentTimeMillis(),
-                note = "Random expense",
-                type = "Expense",
-                isRecurring = false,
-                tags = "Occasional",
-                payment_method = "UPI"
-            )
-        )
         RecentTransactionCard(
             modifier = modifier1,
             context = LocalContext.current,
-            expenses
+            expenses = expenses,
+            onClickItem = { clickedExpense ->
+                expense = clickedExpense
+                showBottomSheet = true
+            }
         )
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                modifier = Modifier.fillMaxHeight(),
+                sheetState = sheetState,
+                onDismissRequest = { showBottomSheet = false }
+            ) {
+
+                expense?.let { exp ->
+
+                    Text(
+                        text = exp.title,
+                        modifier = Modifier.padding(16.dp)
+                    )
+
+                    Text(
+                        text = "Amount: ₹${exp.amount}",
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
+                    Text(
+                        text = "Category: ${exp.category}",
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
+                    Text(
+                        text = "Tag: ${exp.tags}",
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
+                    Text(
+                        text = "Payment: ${exp.payment_method}",
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
+                    Text(
+                        text = "Note: ${exp.note}",
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+        }
     }
 }
 

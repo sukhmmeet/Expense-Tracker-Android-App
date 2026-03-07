@@ -21,18 +21,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BalanceCard(balance: Float, modifier: Modifier) {
+fun BalanceCard(balance: Double, modifier : Modifier = Modifier
+    .fillMaxWidth()
+    .padding(horizontal = 16.dp, vertical = 12.dp)) {
 
     val animatedBalance by animateFloatAsState(
-        targetValue = balance,
+        targetValue = balance.toFloat(),
         animationSpec = tween(durationMillis = 800),
         label = "balanceAnimation"
     )
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(24.dp)
     ) {
         Column(
@@ -64,5 +64,5 @@ fun BalanceCard(balance: Float, modifier: Modifier) {
 @Preview
 @Composable
 fun Preview1(){
-    BalanceCard(5000f, Modifier)
+    BalanceCard(5000.6, Modifier)
 }

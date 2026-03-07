@@ -4,10 +4,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,24 +15,22 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.dhaliwal.expensetracker.ui.theme.ExpenseTrackerTheme
 
 @Composable
 fun ExpenseDonutChart(
-    income: Float,
-    expense: Float,
+    income: Double,
+    expense: Double,
     modifier: Modifier = Modifier,
-    donutSize : Dp = 220.dp
+    donutSize: Dp = 220.dp
 ) {
     val total = income + expense
     val gapAngle = 4f
 
-    val incomeAngle = if (total == 0f) 0f else (income / total) * 360f
+    val incomeAngle = if (total == 0.0) 0f else ((income / total) * 360).toFloat()
     val expenseAngle = 360f - incomeAngle
 
     val animatedIncomeAngle by animateFloatAsState(
@@ -96,8 +92,8 @@ fun ExpenseDonutChart(
 fun GreetingPreview() {
     ExpenseTrackerTheme {
         ExpenseDonutChart(
-            income = 10000f,
-            expense = 5000f
+            income = 10000.4,
+            expense = 5000.3
         )
     }
 }

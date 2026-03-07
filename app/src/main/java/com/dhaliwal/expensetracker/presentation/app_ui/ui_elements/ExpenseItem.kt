@@ -1,14 +1,12 @@
 package com.dhaliwal.expensetracker.presentation.app_ui.ui_elements
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,14 +20,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dhaliwal.expensetracker.data.Util.Util
 import com.dhaliwal.expensetracker.data.local.Expense
-import kotlin.text.category
 
 @Composable
 fun ExpenseItem(
-    expense : Expense
-){
+    expense: Expense,
+    onClickItem: (Expense) -> Unit = {},
+
+    ){
     Row(
-        Modifier.fillMaxWidth().padding(3.dp),
+        Modifier.fillMaxWidth().padding(3.dp).clickable(enabled = true, onClick = {
+            onClickItem(expense)
+        }),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -187,5 +188,5 @@ fun Preview3(){
             payment_method = "UPI"
         )
     )
-    ExpenseItem(expenses[0])
+    ExpenseItem(expenses[0], {})
 }
