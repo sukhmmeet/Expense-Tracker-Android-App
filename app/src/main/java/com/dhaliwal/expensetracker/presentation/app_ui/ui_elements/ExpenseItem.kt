@@ -1,69 +1,61 @@
 package com.dhaliwal.expensetracker.presentation.app_ui.ui_elements
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dhaliwal.expensetracker.data.Util.Util
 import com.dhaliwal.expensetracker.data.local.Expense
+import kotlin.text.category
 
 @Composable
-fun RecentTransactionCard(
-    modifier: Modifier,
-    context : Context = LocalContext.current,
-    expenses : List<Expense>
+fun ExpenseItem(
+    expense : Expense
 ){
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(24.dp)
+    Row(
+        Modifier.fillMaxWidth().padding(3.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(
-                horizontal = 12.dp,
-                vertical = 2.dp,
-            ).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                "Recent Transactions",
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-            )
-            TextButton(onClick = { }) {
-                Text("See All")
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = null,
-                    modifier = Modifier.padding(3.dp).size(10.dp)
-                )
+        Icon(
+            painter = painterResource(Util().getLogo(expense.category)),
+            contentDescription = "Expense Type",
+            tint = Color.Unspecified,
+            modifier = Modifier.padding(8.dp).size(50.dp)
+        )
+        Column() {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(expense.title, fontSize = MaterialTheme.typography.titleLarge.fontSize, fontWeight = FontWeight.Bold)
+                Text("₹${expense.amount}",fontSize = MaterialTheme.typography.titleLarge.fontSize, fontWeight = FontWeight.Bold)
             }
-        }
-        LazyColumn(
-            modifier = Modifier.padding(horizontal = 6.dp)
-        ) {
-            items(items = expenses){ expense ->
-                ExpenseItem(expense)
+            Text(
+                expense.category,
+                modifier = Modifier.fillMaxWidth().padding(start = 8.dp)
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(expense.tags)
+                Text("₹${Util().convertMillisToDate(expense.date)}")
             }
         }
     }
@@ -71,7 +63,7 @@ fun RecentTransactionCard(
 
 @Preview
 @Composable
-fun Preview2(){
+fun Preview3(){
     val expenses = listOf(
         Expense(
             title = "Lunch",
@@ -195,8 +187,5 @@ fun Preview2(){
             payment_method = "UPI"
         )
     )
-    RecentTransactionCard(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-        expenses = expenses
-    )
+    ExpenseItem(expenses[0])
 }
