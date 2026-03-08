@@ -1,10 +1,11 @@
 package com.dhaliwal.expensetracker.data.Util
 
-import com.dhaliwal.expensetracker.R
 import com.dhaliwal.expensetracker.data.local.Expense
 import com.dhaliwal.expensetracker.data.local.ExpensesConstants
 import com.dhaliwal.expensetracker.data.local.TotalAmount
-import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.ExpenseDonutChart
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -36,19 +37,21 @@ class Util {
     //                            } else {
     //                                "Income"
     //                            }
-    fun getTotalExpenseAndIncome(expenses: List<Expense>): TotalAmount {
+    fun getTotalExpenseAndIncome(expenses: Flow<List<Expense>>): Flow<TotalAmount> {
+        return expenses.map { expenseList ->
 
-        var expenseTotal = 0.0
-        var incomeTotal = 0.0
+            var expenseTotal = 0.0
+            var incomeTotal = 0.0
 
-        expenses.forEach {
-            if (it.type == "Expense") {
-                expenseTotal += it.amount
-            } else {
-                incomeTotal += it.amount
+            expenseList.forEach { expense ->
+                if (expense.type == "Expense") {
+                    expenseTotal += expense.amount
+                } else {
+                    incomeTotal += expense.amount
+                }
             }
-        }
 
-        return TotalAmount(expenseTotal, incomeTotal)
+            TotalAmount(expenseTotal, incomeTotal)
+        }
     }
 }

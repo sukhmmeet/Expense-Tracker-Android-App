@@ -33,6 +33,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,8 +51,10 @@ import androidx.compose.ui.unit.sp
 import com.dhaliwal.expensetracker.data.Util.Util
 import com.dhaliwal.expensetracker.data.local.Expense
 import com.dhaliwal.expensetracker.data.local.ExpensesConstants
+import com.dhaliwal.expensetracker.data.local.TotalAmount
 import com.dhaliwal.expensetracker.presentation.app_ui.AddExpenseActivity
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.BalanceCard
+import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.BottomSheetContent
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.FinancialOverViewCard
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.RecentTransactionCard
 import com.dhaliwal.expensetracker.presentation.view_models.ExpensesViewModel
@@ -77,7 +80,7 @@ class MainActivity : ComponentActivity() {
                         .statusBarsPadding()
                 ) {
                     MainScreen(
-//                        viewModel = viewModel
+                        viewModel = viewModel
                     )
                 }
             }
@@ -86,9 +89,7 @@ class MainActivity : ComponentActivity() {
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
-//    viewModel: ExpensesViewModel = viewModel()
-){
+fun MainScreen(viewModel: ExpensesViewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -103,7 +104,7 @@ fun MainScreen(
                 .padding(innerPadding)
         ) {
             MainActivityContent(
-
+                viewModel = viewModel
             )
         }
     }
@@ -111,133 +112,11 @@ fun MainScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainActivityContent(
-
-) {
-    val expenses = listOf(
-        Expense(
-            title = "Lunch",
-            amount = 250.0,
-            category = "Food",
-            date = System.currentTimeMillis(),
-            note = "College canteen",
-            type = "Expense",
-            isRecurring = false,
-            tags = "Daily",
-            payment_method = "Cash"
-        ),
-        Expense(
-            title = "Bus Ticket",
-            amount = 60.5,
-            category = "Transport",
-            date = System.currentTimeMillis(),
-            note = "Bus to college",
-            type = "Expense",
-            isRecurring = false,
-            tags = "Daily",
-            payment_method = "Cash"
-        ),
-        Expense(
-            title = "Electricity Bill",
-            amount = 1800.0,
-            category = "Bills",
-            date = System.currentTimeMillis(),
-            note = "Monthly bill",
-            type = "Expense",
-            isRecurring = true,
-            tags = "Monthly",
-            payment_method = "Net Banking"
-        ),
-        Expense(
-            title = "House Rent",
-            amount = 12000.0,
-            category = "Rent",
-            date = System.currentTimeMillis(),
-            note = "March rent",
-            type = "Expense",
-            isRecurring = true,
-            tags = "Monthly",
-            payment_method = "Bank Transfer"
-        ),
-        Expense(
-            title = "Movie",
-            amount = 400.0,
-            category = "Entertainment",
-            date = System.currentTimeMillis(),
-            note = "Cinema with friends",
-            type = "Expense",
-            isRecurring = false,
-            tags = "Occasional",
-            payment_method = "UPI"
-        ),
-        Expense(
-            title = "Doctor Visit",
-            amount = 700.0,
-            category = "Health",
-            date = System.currentTimeMillis(),
-            note = "General checkup",
-            type = "Expense",
-            isRecurring = false,
-            tags = "One Time",
-            payment_method = "Cash"
-        ),
-        Expense(
-            title = "New Shoes",
-            amount = 2200.0,
-            category = "Shopping",
-            date = System.currentTimeMillis(),
-            note = "Sports shoes",
-            type = "Expense",
-            isRecurring = false,
-            tags = "Occasional",
-            payment_method = "Credit Card"
-        ),
-        Expense(
-            title = "Programming Book",
-            amount = 950.0,
-            category = "Education",
-            date = System.currentTimeMillis(),
-            note = "DSA practice book",
-            type = "Expense",
-            isRecurring = false,
-            tags = "One Time",
-            payment_method = "UPI"
-        ),
-        Expense(
-            title = "Mutual Fund SIP",
-            amount = 3000.0,
-            category = "Investment",
-            date = System.currentTimeMillis(),
-            note = "Monthly investment",
-            type = "Expense",
-            isRecurring = true,
-            tags = "Monthly",
-            payment_method = "Bank Transfer"
-        ),
-        Expense(
-            title = "Salary Credit",
-            amount = 45000.0,
-            category = "Salary",
-            date = System.currentTimeMillis(),
-            note = "Company salary",
-            type = "Income",
-            isRecurring = true,
-            tags = "Monthly",
-            payment_method = "Bank Transfer"
-        ),
-        Expense(
-            title = "Misc Expense",
-            amount = 300.0,
-            category = "Others",
-            date = System.currentTimeMillis(),
-            note = "Random expense",
-            type = "Expense",
-            isRecurring = false,
-            tags = "Occasional",
-            payment_method = "UPI"
-        )
-    )
-    var totalExpenseAndIncome = Util().getTotalExpenseAndIncome(expenses)
+fun MainActivityContent(viewModel: ExpensesViewModel) {
+    val expenses = viewModel.allExpenses
+    val totalExpenseAndIncome by Util()
+        .getTotalExpenseAndIncome(expenses)
+        .collectAsState(initial = TotalAmount(0.0, 0.0))
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
@@ -257,6 +136,7 @@ fun MainActivityContent(
             income = totalExpenseAndIncome.totalIncome,
             expense = totalExpenseAndIncome.totalExpense
         )
+        // Pending filtration
         LazyRow(
             modifier = modifier1
         ) {
@@ -292,36 +172,11 @@ fun MainActivityContent(
             ) {
 
                 expense?.let { exp ->
-
-                    Text(
-                        text = exp.title,
-                        modifier = Modifier.padding(16.dp)
-                    )
-
-                    Text(
-                        text = "Amount: ₹${exp.amount}",
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    Text(
-                        text = "Category: ${exp.category}",
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    Text(
-                        text = "Tag: ${exp.tags}",
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    Text(
-                        text = "Payment: ${exp.payment_method}",
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    Text(
-                        text = "Note: ${exp.note}",
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    // Pending edit
+                    BottomSheetContent(expense = exp, {
+                        viewModel.delete(exp)
+                        showBottomSheet = false
+                    }, {})
                 }
             }
         }
@@ -385,6 +240,6 @@ fun TopMainScreenBar(
 @Composable
 fun GreetingPreview() {
     ExpenseTrackerTheme {
-        MainScreen()
+//        MainScreen()
     }
 }
