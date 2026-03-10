@@ -1,6 +1,6 @@
 package com.dhaliwal.expensetracker.data.local
 
-enum class TransactionType {
-    EXPENSE,
-    INCOME
+enum class TransactionType(val value: String) {
+    EXPENSE("Expense"),
+    INCOME("Income")
 }

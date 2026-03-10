@@ -1,8 +1,5 @@
 package com.dhaliwal.expensetracker.data.local
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EmojiTransportation
-import androidx.compose.material.icons.filled.Fastfood
 import com.dhaliwal.expensetracker.R
 
 object ExpensesConstants {
@@ -17,7 +14,7 @@ object ExpensesConstants {
         "Education",      // 7
         "Investment",     // 8
         "Salary",         // 9
-        "Others"          // 10
+        "Others"          // 11
     )
     val categoryIcon = listOf(
         R.drawable.food,

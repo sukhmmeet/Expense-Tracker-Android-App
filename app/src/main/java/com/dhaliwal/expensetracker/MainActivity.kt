@@ -1,5 +1,6 @@
 package com.dhaliwal.expensetracker
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -45,7 +46,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dhaliwal.expensetracker.data.Util.Util
@@ -59,6 +59,8 @@ import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.FinancialOver
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.RecentTransactionCard
 import com.dhaliwal.expensetracker.presentation.view_models.ExpensesViewModel
 import com.dhaliwal.expensetracker.ui.theme.ExpenseTrackerTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
@@ -110,10 +112,17 @@ fun MainScreen(viewModel: ExpensesViewModel) {
     }
 }
 
+@SuppressLint("FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainActivityContent(viewModel: ExpensesViewModel) {
-    val expenses = viewModel.allExpenses
+    var filter by remember { mutableStateOf("All") }
+    var expenses : Flow<List<Expense>>
+    expenses = if(filter == "All"){
+        viewModel.allExpenses
+    }else {
+        viewModel.getByTag(filter)
+    }
     val totalExpenseAndIncome by Util()
         .getTotalExpenseAndIncome(expenses)
         .collectAsState(initial = TotalAmount(0.0, 0.0))
@@ -125,7 +134,6 @@ fun MainActivityContent(viewModel: ExpensesViewModel) {
     val modifier1 = Modifier
         .fillMaxWidth()
         .padding(horizontal = 16.dp, vertical = 6.dp)
-    var filter by remember { mutableStateOf("All") }
     Column(
         modifier = Modifier.padding(3.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -155,14 +163,18 @@ fun MainActivityContent(viewModel: ExpensesViewModel) {
                 )
             }
         }
+        val expenseList by expenses
+            .map { it.take(6) }
+            .collectAsState(initial = emptyList())
+
         RecentTransactionCard(
             modifier = modifier1,
-            context = LocalContext.current,
-            expenses = expenses,
+            expenses = expenseList,
             onClickItem = { clickedExpense ->
                 expense = clickedExpense
                 showBottomSheet = true
-            }
+            },
+            tag = filter
         )
         if (showBottomSheet) {
             ModalBottomSheet(
@@ -172,11 +184,15 @@ fun MainActivityContent(viewModel: ExpensesViewModel) {
             ) {
 
                 expense?.let { exp ->
-                    // Pending edit
                     BottomSheetContent(expense = exp, {
                         viewModel.delete(exp)
                         showBottomSheet = false
-                    }, {})
+                    },
+                        context = LocalContext.current,
+                        hideBottomSheet = {
+                            showBottomSheet = false
+                        }
+                    )
                 }
             }
         }
@@ -233,13 +249,5 @@ fun TopMainScreenBar(
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.SansSerif
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ExpenseTrackerTheme {
-//        MainScreen()
     }
 }

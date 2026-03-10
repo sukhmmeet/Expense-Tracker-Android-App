@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExpenseTracker">
         <activity
+            android:name=".presentation.app_ui.SeeAllExpensesWithFilterActivity"
+            android:exported="false"
+            android:label="@string/title_activity_see_all_expenses"
+            android:theme="@style/Theme.ExpenseTracker" />
+        <activity
             android:name=".presentation.app_ui.AddExpenseActivity"
             android:exported="false"
             android:label="@string/title_activity_add_expense"

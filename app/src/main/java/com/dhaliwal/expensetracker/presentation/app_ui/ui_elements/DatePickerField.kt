@@ -16,18 +16,23 @@ import java.util.*
 fun DatePickerField(
     modifier: Modifier = Modifier,
     label: String = "Select Date",
+    initialDate: Long? = null,
     onDateSelected: (Long?) -> Unit
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
+    var selectedDate by remember { mutableStateOf(initialDate) }
 
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = if (initialDate == 0L) null else initialDate
+    )
 
-    val formattedDate = selectedDate?.let {
+    val formattedDate = if (selectedDate == null || selectedDate == 0L) {
+        "Select Date"
+    } else {
         val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-        formatter.format(Date(it))
-    } ?: "Select Date"
+        formatter.format(Date(selectedDate!!))
+    }
 
     Button(
         onClick = { showDialog = true },
@@ -54,16 +59,12 @@ fun DatePickerField(
                         onDateSelected(datePickerState.selectedDateMillis)
                         showDialog = false
                     }
-                ) {
-                    Text("OK")
-                }
+                ) { Text("OK") }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDialog = false }
-                ) {
-                    Text("Cancel")
-                }
+                ) { Text("Cancel") }
             }
         ) {
             DatePicker(state = datePickerState)

@@ -1,6 +1,7 @@
 package com.dhaliwal.expensetracker.presentation.app_ui.ui_elements
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,39 +26,45 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dhaliwal.expensetracker.data.local.Expense
+import com.dhaliwal.expensetracker.presentation.app_ui.SeeAllExpensesWithFilterActivity
 import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun RecentTransactionCard(
     modifier: Modifier,
     context: Context = LocalContext.current,
-    expenses: Flow<List<Expense>>,
-    onClickItem: (Expense) -> Unit
+    expenses: List<Expense>,
+    onClickItem: (Expense) -> Unit,
+    tag : String
 ){
-    val expenseList by expenses.collectAsState(initial = emptyList())
-
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(24.dp)
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 2.dp)
+                .padding(horizontal = 16.dp, vertical = 6.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "Recent Transactions",
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                text = "Recent Transactions",
+                style = MaterialTheme.typography.titleMedium
             )
 
-            TextButton(onClick = { }) {
+            TextButton(onClick = {
+                val intent = Intent(context, SeeAllExpensesWithFilterActivity::class.java)
+                intent.putExtra("TAG", tag)
+                context.startActivity(intent)
+            }) {
                 Text("See All")
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     contentDescription = null,
-                    modifier = Modifier.padding(3.dp).size(10.dp)
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .size(16.dp)
                 )
             }
         }
@@ -65,7 +72,7 @@ fun RecentTransactionCard(
         LazyColumn(
             modifier = Modifier.padding(horizontal = 6.dp)
         ) {
-            items(items = expenseList) { expense ->
+            items(items = expenses) { expense ->
                 ExpenseItem(expense, onClickItem)
             }
         }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.Locale.getDefault
 
 class Util {
     fun convertMillisToDate(
@@ -44,7 +45,7 @@ class Util {
             var incomeTotal = 0.0
 
             expenseList.forEach { expense ->
-                if (expense.type == "Expense") {
+                if (expense.type.lowercase(getDefault()) == "expense") {
                     expenseTotal += expense.amount
                 } else {
                     incomeTotal += expense.amount

@@ -12,7 +12,7 @@ data class Expense(
     val category: String,     // NOT NULL
     val date: Long,           // NOT NULL
     val note: String = "",    // NOT NULL, default empty string
-    val type: String,         // NOT NULL ("Income" or "Expense")
+    var type: String,         // NOT NULL ("Income" or "Expense")
     val isRecurring: Boolean = false,  // NOT NULL, default false
     val tags: String = "",               // NOT NULL, default empty string
     val payment_method : String

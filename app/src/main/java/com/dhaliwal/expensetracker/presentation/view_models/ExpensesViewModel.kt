@@ -24,4 +24,8 @@ class ExpensesViewModel(application: Application) : AndroidViewModel(application
 
     fun getByCategory(category: String) = repository.getByCategory(category)
 
+    fun getByTag(tag : String) = repository.getByTag(tag = tag)
+
+    fun getById(id : Int) = viewModelScope.launch { repository.getExpenseById(id) }
+
 }

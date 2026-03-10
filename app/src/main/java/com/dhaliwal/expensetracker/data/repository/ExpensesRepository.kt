@@ -38,6 +38,10 @@ class ExpensesRepository(private val expenseDao: ExpenseDao) {
 
     fun getTotalIncome(): Flow<Double> = expenseDao.getTotalIncome()
 
+    fun getByTag(tag: String): Flow<List<Expense>> {
+        return expenseDao.getByTag(tag)
+    }
+
     // ------------------ Single Item ------------------
 
     suspend fun getExpenseById(id: Int): Expense? = expenseDao.getExpenseById(id)

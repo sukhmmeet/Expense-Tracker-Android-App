@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dhaliwal.expensetracker.data.local.Expense
@@ -63,6 +64,8 @@ import com.dhaliwal.expensetracker.presentation.app_ui.ui.theme.ExpenseTrackerTh
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.CustomDropdownField
 import com.dhaliwal.expensetracker.presentation.app_ui.ui_elements.DatePickerField
 import com.dhaliwal.expensetracker.presentation.view_models.ExpensesViewModel
+import java.util.Locale
+import java.util.Locale.getDefault
 
 class AddExpenseActivity : ComponentActivity() {
 
@@ -83,11 +86,45 @@ class AddExpenseActivity : ComponentActivity() {
                         .statusBarsPadding()
                 ) {
 
-                    AddExpenseUI(
-                        viewModel = viewModel,
-                        context = LocalContext.current,
-                        onFinish = {this.finish()}
-                    )
+                    val intent = intent
+                    val id = intent.getIntExtra("id", -1)
+                    val title = intent.getStringExtra("title") ?: ""
+                    val amount = intent.getDoubleExtra("amount", 0.0)
+                    val category = intent.getStringExtra("category") ?: ""
+                    val date = intent.getLongExtra("date", 0L)
+                    val note = intent.getStringExtra("note") ?: ""
+                    val type = intent.getStringExtra("type") ?: ""
+                    val isRecurring = intent.getBooleanExtra("isRecurring", false)
+                    val tags = intent.getStringExtra("tags") ?: ""
+                    val paymentMethod = intent.getStringExtra("payment_method") ?: ""
+
+                    if(id > -1){
+                        AddExpenseUI(
+                            viewModel = viewModel,
+                            context = LocalContext.current,
+                            onFinish = {this.finish()},
+                            expense = Expense(
+                                id = id,
+                                title = title,
+                                amount = amount,
+                                category = category,
+                                date = date,
+                                note = note,
+                                type = type,
+                                isRecurring = isRecurring,
+                                tags = tags,
+                                payment_method = paymentMethod
+                            ),
+                            appBarText = "Update Expense"
+                        )
+                    }else {
+                        AddExpenseUI(
+                            viewModel = viewModel,
+                            context = LocalContext.current,
+                            onFinish = {this.finish()},
+                        )
+                    }
+
                 }
             }
         }
@@ -97,9 +134,21 @@ class AddExpenseActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpenseUI(
+    appBarText : String = "Add Expense",
     viewModel: ExpensesViewModel = viewModel(),
     context: Context = LocalContext.current,
-    onFinish: () -> Unit
+    onFinish: () -> Unit,
+    expense: Expense = Expense(
+        title = "",
+        amount = 0.0,
+        category = "Select Category",
+        date = 0L,
+        note = "",
+        type = "Expense",
+        isRecurring = false,
+        tags = "Select Tag",
+        payment_method = "Select Payment Method"
+    )
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -114,23 +163,19 @@ fun AddExpenseUI(
             horizontal = 30.dp
         )
         .fillMaxWidth()
-    var title by remember { mutableStateOf("") }
-    var amount by remember { mutableStateOf("") }
-    var note by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("Select Category") }
-    var selectedTypeIncomeOrExpense by remember { mutableStateOf(TransactionType.EXPENSE) }
-    var selectedPaymentMethod by remember { mutableStateOf("Select Payment Method") }
-    var dateInMill: Long? = 0
-    var isRecurring by remember { mutableStateOf(false) }
-    var selectedTag by remember { mutableStateOf("Select Tag") }
-
+    var selectedExpense by remember(expense.id) {
+        mutableStateOf(
+            if (expense.type.isBlank()) expense.copy(type = "Expense")
+            else expense
+        )
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Add Expense",
+                        text = appBarText,
                         fontSize = MaterialTheme.typography.headlineMedium.fontSize,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -157,8 +202,8 @@ fun AddExpenseUI(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
+                value = selectedExpense.title,
+                onValueChange = { selectedExpense = selectedExpense.copy(title = it) },
                 modifier = modifierForAllElements
                     .focusRequester(titleFocus),
                 label = { Text("Title") },
@@ -171,8 +216,12 @@ fun AddExpenseUI(
                 )
             )
             OutlinedTextField(
-                value = amount,
-                onValueChange = { amount = it },
+                value = if (selectedExpense.amount == 0.0) "" else selectedExpense.amount.toString(),
+                onValueChange = {
+                    selectedExpense = selectedExpense.copy(
+                        amount = it.toDoubleOrNull() ?: 0.0
+                    )
+                },
                 modifier = modifierForAllElements
                     .focusRequester(amountFocus),
                 label = { Text("Amount") },
@@ -186,8 +235,8 @@ fun AddExpenseUI(
                 )
             )
             OutlinedTextField(
-                value = note,
-                onValueChange = { note = it },
+                value = selectedExpense.note,
+                onValueChange = { selectedExpense = selectedExpense.copy(note = it) },
                 modifier = modifierForAllElements
                     .focusRequester(noteFocus),
                 label = { Text("Note") },
@@ -203,25 +252,35 @@ fun AddExpenseUI(
             CustomDropdownField(
                 label = "Category",
                 options = ExpensesConstants.category,
-                selectedValue = selectedCategory,
-                onValueSelected = { selectedCategory = it },
+                selectedValue = selectedExpense.category,
+                onValueSelected = {
+                    selectedExpense = selectedExpense.copy(category = it)
+                },
                 modifier = modifierForAllElements
             )
 
             CustomDropdownField(
                 label = "Payment Method",
                 options = ExpensesConstants.payment_method,
-                selectedValue = selectedPaymentMethod,
-                onValueSelected = { selectedPaymentMethod = it },
+                selectedValue = selectedExpense.payment_method,
+                onValueSelected = {
+                    selectedExpense = selectedExpense.copy(payment_method = it)
+                },
                 modifier = modifierForAllElements
             )
             CustomDropdownField(
                 label = "Payment Tag",
                 options = ExpensesConstants.tag,
-                selectedValue = selectedTag,
-                onValueSelected = { selectedTag = it },
+                selectedValue = selectedExpense.tags,
+                onValueSelected = {
+                    selectedExpense = selectedExpense.copy(tags = it)
+                },
                 modifier = modifierForAllElements
             )
+
+
+            val type = selectedExpense.type
+            val bool = selectedExpense.type == TransactionType.EXPENSE.value
 
             Row(
                 modifier = modifierForAllElements,
@@ -229,8 +288,10 @@ fun AddExpenseUI(
             ) {
 
                 FilterChip(
-                    selected = selectedTypeIncomeOrExpense == TransactionType.EXPENSE,
-                    onClick = { selectedTypeIncomeOrExpense = TransactionType.EXPENSE },
+                    selected = selectedExpense.type == TransactionType.EXPENSE.value,
+                    onClick = {
+                        selectedExpense = selectedExpense.copy(type = TransactionType.EXPENSE.value)
+                    },
                     label = {
                         Text(
                             text = "Expense",
@@ -238,27 +299,30 @@ fun AddExpenseUI(
                             textAlign = TextAlign.Center
                         )
                     },
-                    modifier = Modifier.weight(1F)
+                    modifier = Modifier.weight(1f)
                 )
 
                 FilterChip(
-                    selected = selectedTypeIncomeOrExpense == TransactionType.INCOME,
-                    onClick = { selectedTypeIncomeOrExpense = TransactionType.INCOME },
+                    selected = selectedExpense.type == TransactionType.INCOME.value,
+                    onClick = {
+                        selectedExpense = selectedExpense.copy(type = TransactionType.INCOME.value)
+                    },
                     label = {
                         Text(
                             text = "Income",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
-                            },
-                    modifier = Modifier.weight(1F)
+                    },
+                    modifier = Modifier.weight(1f)
                 )
             }
 
             DatePickerField(
                 modifier = modifierForAllElements,
+                initialDate = selectedExpense.date
             ) { millis ->
-                dateInMill = millis
+                selectedExpense = selectedExpense.copy(date = millis?: 0L)
             }
 
             Row(
@@ -278,45 +342,33 @@ fun AddExpenseUI(
                 )
 
                 Switch(
-                    checked = isRecurring,
-                    onCheckedChange = { isRecurring = it }
+                    checked = selectedExpense.isRecurring,
+                    onCheckedChange = {
+                        selectedExpense = selectedExpense.copy(isRecurring = it)
+                    }
                 )
             }
+
             Button(
                 onClick = {
                     if(
-                        title != "" && selectedCategory != "Select Category" && selectedPaymentMethod != "Select Payment Method" && dateInMill != 0L && selectedTag != "Select Tag"
+                        selectedExpense.title.isNotBlank() &&
+                        selectedExpense.category != "Select Category" &&
+                        selectedExpense.payment_method != "Select Payment Method" &&
+                        selectedExpense.date != 0L &&
+                        selectedExpense.tags != "Select Tag"
                     ){
-                        val expense = Expense(
-                            title = title,
-                            amount = amount.toDouble(),
-                            category = selectedCategory,
-                            date = dateInMill ?: 0,
-                            note = note,
-                            isRecurring = isRecurring,
-                            type = if(selectedTypeIncomeOrExpense == TransactionType.EXPENSE){
-                                "Expense"
-                            } else {
-                                "Income"
-                            },
-                            payment_method = selectedPaymentMethod,
-                            tags = selectedTag
-                        )
-                        viewModel.insert(expense)
+                        viewModel.insert(selectedExpense)
                         onFinish()
                     } else {
                         Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
                     }
-
                 },
-                modifier = Modifier
-                    .width(100.dp),
+                modifier = Modifier.width(100.dp),
                 shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(vertical = 12.dp)
             ) {
-                Text(
-                    text = "Submit"
-                )
+                Text("Submit")
             }
         }
     }
