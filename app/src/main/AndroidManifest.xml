@@ -12,7 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExpenseTracker">
         <activity
-            android:name=".presentation.app_ui.SeeAllExpensesWithFilterActivity"
+            android:name=".presentation.app_ui.SearchExpenseActivity"
+            android:exported="false"
+            android:label="@string/title_activity_search_expense"
+            android:theme="@style/Theme.ExpenseTracker" />
+        <activity
+            android:name=".presentation.app_ui.SeeExpensesWithFilterActivity"
             android:exported="false"
             android:label="@string/title_activity_see_all_expenses"
             android:theme="@style/Theme.ExpenseTracker" />
@@ -31,7 +36,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> <!-- Provide -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

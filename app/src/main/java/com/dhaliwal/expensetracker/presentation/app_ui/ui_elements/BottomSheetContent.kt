@@ -1,7 +1,6 @@
 package com.dhaliwal.expensetracker.presentation.app_ui.ui_elements
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,20 +12,17 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.dhaliwal.expensetracker.data.Util.Util
+import com.dhaliwal.expensetracker.data.util.openEditActivity
+import com.dhaliwal.expensetracker.data.util.Util
 import com.dhaliwal.expensetracker.data.local.Expense
-import com.dhaliwal.expensetracker.presentation.app_ui.AddExpenseActivity
 
 @Composable
 fun BottomSheetContent(
@@ -94,20 +90,10 @@ fun BottomSheetContent(
                 modifier = Modifier.weight(1f),
                 color = Color(0xFF4CAF50)
             ) {
-                val intent = Intent(context, AddExpenseActivity::class.java)
-
-                intent.putExtra("id", expense.id)
-                intent.putExtra("title", expense.title)
-                intent.putExtra("amount", expense.amount)
-                intent.putExtra("category", expense.category)
-                intent.putExtra("date", expense.date)
-                intent.putExtra("note", expense.note)
-                intent.putExtra("type", expense.type)
-                intent.putExtra("isRecurring", expense.isRecurring)
-                intent.putExtra("tags", expense.tags)
-                intent.putExtra("payment_method", expense.payment_method)
-
-                context.startActivity(intent)
+                openEditActivity(
+                    context = context,
+                    expense = expense
+                )
 
                 hideBottomSheet()
             }

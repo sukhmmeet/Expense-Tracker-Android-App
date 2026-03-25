@@ -44,6 +44,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
@@ -68,6 +70,8 @@ dependencies {
 
     testImplementation(libs.junit)
 
+    implementation(libs.itextg)
+
 //    testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
     testImplementation(libs.kotlinx.coroutines.test.v173)
@@ -75,7 +79,6 @@ dependencies {
 // Room testing (Local Unit Test)
     testImplementation(libs.androidx.room.testing)
     testImplementation(libs.kotlinx.coroutines.test)
-
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -83,7 +86,6 @@ dependencies {
 
 // Room testing (Instrumented Test)
     androidTestImplementation(libs.androidx.room.testing)
-
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
