@@ -95,7 +95,7 @@ Through this project, I learned:
 
 - Implementation of **MVVM Architecture**
 - Working with **Room Database (CRUD operations)**
-- Handling **RecyclerView / LazyColumn interactions**
+- Handling **LazyColumn interactions**
 - Implementing **Swipe gestures**
 - Generating and sharing **PDF files**
 - Integrating **charts for data visualization**
