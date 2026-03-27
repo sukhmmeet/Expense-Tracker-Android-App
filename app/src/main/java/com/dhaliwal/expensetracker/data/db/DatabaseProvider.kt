@@ -14,7 +14,6 @@ object DatabaseProvider {
             val instance = Room.databaseBuilder(
                 context.applicationContext,
                 ExpensesDatabase::class.java,
-//                "database/expenses.db"
                 "expenses.db"
             )
                 .fallbackToDestructiveMigration()

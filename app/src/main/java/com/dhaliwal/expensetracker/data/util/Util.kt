@@ -47,12 +47,6 @@ class Util {
         }
         return ExpensesConstants.categoryIcon[index]
     }
-
-    //type = if(selectedTypeIncomeOrExpense == TransactionType.EXPENSE){
-    //                                "Expense"
-    //                            } else {
-    //                                "Income"
-    //                            }
     fun getTotalExpenseAndIncome(expenses: Flow<List<Expense>>): Flow<TotalAmount> {
         return expenses.map { expenseList ->
 
