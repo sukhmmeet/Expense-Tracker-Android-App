@@ -76,7 +76,7 @@ It showcases practical implementation of **Room Database, MVVM architecture, and
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/sukhmmeet/expense-tracker.git
+git clone https://github.com/sukhmmeet/expense-tracker-android-app.git
 ```
 2. Open the project in Android Studio
 3. Build and run the app on emulator or device
