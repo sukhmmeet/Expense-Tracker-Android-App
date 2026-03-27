@@ -1,6 +1,12 @@
 # 💰 Expense Tracker App
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Platform](https://img.shields.io/badge/platform-Android-green)
+![Status](https://img.shields.io/badge/status-completed-success)
+
 A modern **Expense Tracker Android App** built as a learning project to manage daily expenses efficiently with powerful features like analytics, filtering, and offline storage.
+
+> 📊 Helps users track, analyze, and manage daily expenses with visual insights and offline reliability.
 
 ---
 
@@ -51,14 +57,15 @@ It showcases practical implementation of **Room Database, MVVM architecture, and
 
 ## 📱 Screenshots
 
-<!-- Add your app screenshots here -->
 <p align="center">
+  <b>Dashboard • Expense List • Add Expense</b><br><br>
   <img src="screenshots/dashboard.png" width="30%" />
   <img src="screenshots/all.png" width="30%" />
   <img src="screenshots/add.png" width="30%" />
 </p>
 
 <p align="center">
+  <b>Search • Export PDF</b><br><br>
   <img src="screenshots/search.png" width="30%" />
   <img src="screenshots/export.png" width="30%" />
 </p>
@@ -77,7 +84,7 @@ git clone https://github.com/sukhmmeet/expense-tracker.git
 
 ## 📥 Download APK
 
-👉 [Download Latest APK](#)  
+👉 [Download Latest APK](https://github.com/sukhmmeet/expense-tracker/releases)
 *(Upload APK in Releases section and update link)*
 
 ---
@@ -109,7 +116,8 @@ This project is open-source and available under the **MIT License**.
 
 ## 👨‍💻 Developer
 
-Made with ❤️ by **DHALIWAL**
+Built with ❤️ by **DHALIWAL**  
+Android Developer | Passionate about building real-world apps
 
 ---
 
