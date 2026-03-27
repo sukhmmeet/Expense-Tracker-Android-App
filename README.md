@@ -84,7 +84,7 @@ git clone https://github.com/sukhmmeet/expense-tracker.git
 
 ## 📥 Download APK
 
-👉 [Download Latest APK](https://github.com/sukhmmeet/expense-tracker/releases)
+👉 [Download Latest APK](https://github.com/sukhmmeet/expense-tracker-android-app/releases)
 *(Upload APK in Releases section and update link)*
 
 ---
